@@ -1,0 +1,57 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: cr-jenkins-pipeline
+rules:
+- apiGroups:
+    - ""
+  resources:
+    - namespaces
+  verbs:
+    - delete
+    - create
+    - patch
+    - get
+    - list
+- apiGroups: 
+    - ""
+  resources:
+    - pods
+    - pods/portforward
+    - pods/log
+    - pods/exec
+  verbs:
+    - get
+    - list
+    - create
+    - delete
+    - watch
+- apiGroups:
+    - ""
+  resources:
+    - secrets
+  verbs:
+    - get
+    - create
+- apiGroups:
+    - ""
+  resources: 
+    - serviceaccounts
+  verbs:
+    - get
+    - patch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: crb-jenkins-pipeline
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cr-jenkins-pipeline
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: system:serviceaccounts:ns1
